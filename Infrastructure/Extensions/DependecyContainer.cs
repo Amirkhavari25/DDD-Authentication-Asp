@@ -1,4 +1,10 @@
-﻿using Infrastructure.Data;
+﻿using Application.Interface;
+using Application.Mapper;
+using Application.Services;
+using Core.Interface;
+using Core.Models;
+using Infrastructure.Data;
+using Infrastructure.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,6 +25,12 @@ namespace Infrastructure.Extensions
                 options.UseSqlServer(configiration.GetConnectionString("DefaultConnection")));
             //dependency for dapper context
             services.AddScoped<DapperDbContext>();
+            //dependency for auto mappe 
+            services.AddAutoMapper(typeof(UserMapper));
+
+            //service and interface injections
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUserService, UserService>();
         }
     }
 }
