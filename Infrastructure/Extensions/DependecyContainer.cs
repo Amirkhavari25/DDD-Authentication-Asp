@@ -3,8 +3,10 @@ using Application.Mapper;
 using Application.Services;
 using Core.Interface;
 using Core.Models;
+using Core.Services;
 using Infrastructure.Data;
 using Infrastructure.Repository;
+using Infrastructure.Security;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,6 +33,7 @@ namespace Infrastructure.Extensions
             //service and interface injections
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IPasswordEncryptionService, PasswordEncryptionService>();
         }
     }
 }

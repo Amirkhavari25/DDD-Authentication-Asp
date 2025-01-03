@@ -18,6 +18,10 @@ namespace API.Controllers
         [HttpPost]
         public async Task<IActionResult> Register([FromBody] RegisterUser registerDTO)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
             var Result = await _userService.RegisterUser(registerDTO);
             if (!Result.IsSuccess)
             {
