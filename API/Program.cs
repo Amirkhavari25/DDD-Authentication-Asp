@@ -1,4 +1,5 @@
 
+using API.Middleware;
 using Infrastructure.Extensions;
 
 namespace API
@@ -12,6 +13,8 @@ namespace API
             // Add services to the container.
             DependecyContainer.RegisterServices(builder.Services, builder.Configuration);
 
+
+           
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
@@ -27,6 +30,9 @@ namespace API
             }
 
             app.UseHttpsRedirection();
+            
+            //user authentication middleware
+            app.UseMiddleware<AuthenticationMiddleware>();
 
             app.UseAuthorization();
 
