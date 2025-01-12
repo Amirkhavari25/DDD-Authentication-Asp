@@ -11,7 +11,7 @@ namespace API.Middleware
         public AuthenticationMiddleware(RequestDelegate next)
         {
             _next = next;
-            _publicKeyPath = Path.Combine(Directory.GetCurrentDirectory(), "Infrastructure", "RSAKeys", "tokenPublic.key");
+            _publicKeyPath = Path.Combine(Directory.GetCurrentDirectory(), "../Infrastructure", "RSAKeys", "tokenPublic.key");
         }
         public async Task InvokeAsync(HttpContext context)
         {

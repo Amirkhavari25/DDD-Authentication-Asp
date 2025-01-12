@@ -8,8 +8,6 @@ namespace Application.DTOs
 {
     public class TokenPayload
     {
-        public string Name { get; set; }
-        public string Lastname { get; set; }
         public string Username { get; set; }
         public DateTime ExpireDate { get; set; }
         public DateTime CreateDate { get; set; }

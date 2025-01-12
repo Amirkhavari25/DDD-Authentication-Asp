@@ -1,6 +1,7 @@
 ﻿using Application.DTOs;
 using Application.Interface;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -15,6 +16,7 @@ namespace API.Controllers
         {
             _userService = userService;
         }
+        [Route("Register")]
         [HttpPost]
         public async Task<IActionResult> Register([FromBody] RegisterUser registerDTO)
         {
@@ -25,10 +27,16 @@ namespace API.Controllers
             var Result = await _userService.RegisterUser(registerDTO);
             if (!Result.IsSuccess)
             {
-                return BadRequest(Result.ErrorMessage);
+                return BadRequest(new { message = Result.ErrorMessage });
             }
 
-            return Ok(Result);
+            return Ok(new
+            {
+                Username = Result.Username,
+                Email = Result.Email,
+                Mobile = Result.Mobile,
+                Token = Result.Token
+            });
         }
     }
 }

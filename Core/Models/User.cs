@@ -27,7 +27,7 @@ namespace Core.Models
         public int StatusId { get; set; }
         public Status Status { get; set; }
         public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
-        public int ProfileRef { get; set; }
-        public UserProfile UserProfile { get; set; }
+        public int? ProfileRef { get; set; }
+        public UserProfile? UserProfile { get; set; }
     }
 }

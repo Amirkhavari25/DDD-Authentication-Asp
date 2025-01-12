@@ -3,7 +3,6 @@ using Application.Interface;
 using AutoMapper;
 using Core.Interface;
 using Core.Models;
-using Core.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,29 +17,43 @@ namespace Application.Services
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
         private readonly IPasswordEncryptionService _passwordEncryptionService;
-        public UserService(IUserRepository userRepository, IMapper mapper, IPasswordEncryptionService passwordEncryptionService)
+        private readonly ITokenService _tokenService;
+        public UserService(IUserRepository userRepository, IMapper mapper, IPasswordEncryptionService passwordEncryptionService, ITokenService tokenService)
         {
             _mapper = mapper;
             _userRepository = userRepository;
             _passwordEncryptionService = passwordEncryptionService;
+            _tokenService = tokenService;
         }
 
         public async Task<RegisterUserResponse> RegisterUser(RegisterUser DTO)
         {
             //check if user already exist
-            var ExistUser = await _userRepository.GetUserByEmail(DTO.Email);
-            if (ExistUser != null)
+            if (await _userRepository.GetUserByEmail(DTO.Email) != null)
             {
                 return RegisterUserResponse.Failure("User already exists");
             }
             var User = _mapper.Map<User>(DTO);
             //hash password
             User.Password = await _passwordEncryptionService.EncryptPasswordAsync(DTO.Password);
-            //create token 
-
-            //map to resposne and fill datas
-            await _userRepository.AddUserAsync(User);
-            return RegisterUserResponse.Success();
+            //create token
+            var Payload = new TokenPayload
+            {
+                CreateDate = DateTime.Now,
+                ExpireDate = DateTime.Now.AddMinutes(30),
+                Username = DTO.Username
+            };
+            var Token = await _tokenService.CreateToken(Payload);
+            //save user to database
+            try
+            {
+                await _userRepository.AddUserAsync(User);
+            }
+            catch (Exception ex)
+            {
+                return RegisterUserResponse.Failure(ex.Message);
+            }
+            return RegisterUserResponse.Success(Token, User);
         }
     }
 }

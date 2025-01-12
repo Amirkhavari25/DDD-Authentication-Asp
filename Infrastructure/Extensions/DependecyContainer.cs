@@ -33,6 +33,7 @@ namespace Infrastructure.Extensions
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IPasswordEncryptionService, PasswordEncryptionService>();
+            services.AddScoped<ITokenService, TokenService>();
         }
     }
 }

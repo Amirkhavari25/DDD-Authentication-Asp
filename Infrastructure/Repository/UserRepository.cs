@@ -2,6 +2,7 @@
 using Core.Models;
 using Dapper;
 using Infrastructure.Data;
+using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,20 +22,46 @@ namespace Infrastructure.Repository
 
         public async Task AddUserAsync(User user)
         {
-            var sql = @"INSERT INTO Users (Username,Email,Mobile,Password,StatusId,CreateDate,LastModifyDate)
-                        VALUES (@Username,@Email,@Mobile,@Password,1,@CreateDate,@LastModifyDate";
+            var sql = @"INSERT INTO Users (Username,Email,EmailVerify,Mobile,MobileVerify,Password,PassError,BlockCount,StatusId,CreateDate,LastModifyDate)
+                        VALUES (@Username,@Email,@EmailVerify,@Mobile,@MobileVerify,@Password,@PassError,@BlockCount,1,@CreateDate,@LastModifyDate)";
             var parameters = new
             {
                 user.Username,
                 user.Email,
+                user.EmailVerify,
                 user.Mobile,
+                user.MobileVerify,
                 user.Password,
-                CreateDate=DateTime.Now,
-                LastModifyDate = DateTime.Now,
+                user.PassError,
+                user.BlockCount,
+                CreateDate = DateTime.Now,
+                LastModifyDate = DateTime.Now
             };
-            using (var connection = _context.CreateConnection())
+            try
             {
-                await connection.ExecuteAsync(sql,parameters);
+                using (var connection = _context.CreateConnection())
+                {
+                    await connection.ExecuteAsync(sql, parameters);
+                }
+            }
+            catch (SqlException ex)
+            {
+                if (ex.Message.Contains("IX_Users_Email"))
+                {
+                    throw new Exception("The email provided is already in use.");
+                }
+                else if (ex.Message.Contains("IX_Users_Username"))
+                {
+                    throw new Exception("The username provided is already in use.");
+                }
+                else if (ex.Message.Contains("IX_Users_Mobile"))
+                {
+                    throw new Exception("The mobile provided is already exist.");
+                }
+                else
+                {
+                    throw new Exception("Something went wrong by server.");
+                }
             }
         }
 
@@ -44,7 +71,7 @@ namespace Infrastructure.Repository
             var query = "SELECT * FROM Users WHERE Email = @Email";
             using (var connection = _context.CreateConnection())
             {
-                return await connection.QueryFirstOrDefaultAsync(query, new { Email });
+                return await connection.QueryFirstOrDefaultAsync<User>(query, new { Email });
             }
 
         }

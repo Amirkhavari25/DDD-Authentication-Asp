@@ -13,13 +13,11 @@ namespace Infrastructure.Security
 {
     public class TokenService : ITokenService
     {
-        private readonly string _publicKeyPath;
         private readonly string _privateKeyPath;
 
         public TokenService()
         {
-            _publicKeyPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Src/Infrastructure/RSAKeys/tokenPublic.key");
-            _privateKeyPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Src/Infrastructure/RSAKeys/tokenPrivate.key");
+            _privateKeyPath = Path.Combine(Directory.GetCurrentDirectory(), "../Infrastructure/RSAKeys/tokenPrivate.key");
         }
         public Task<string> CreateToken(TokenPayload payload)
         {
@@ -40,8 +38,6 @@ namespace Infrastructure.Security
             // Define the claims for the payload
             var claims = new[]
             {
-              new System.Security.Claims.Claim("Name", payload.Name),
-              new System.Security.Claims.Claim("Lastname", payload.Lastname),
               new System.Security.Claims.Claim("Username", payload.Username),
               new System.Security.Claims.Claim("Createdate", payload.CreateDate.ToString("o")),
               new System.Security.Claims.Claim("Expiredate", payload.ExpireDate.ToString("o"))

@@ -15,8 +15,9 @@ namespace Infrastructure.Security
 
         public PasswordEncryptionService()
         {
-            _publicKeyPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Src/Infrastructure/RSAKeys/passwordPublic.key");
-            _privateKeyPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Src/Infrastructure/RSAKeys/passwordPrivate.key");
+            _privateKeyPath = Path.Combine(Directory.GetCurrentDirectory(), "../Infrastructure/RSAKeys/passwordPrivate.key");
+            _publicKeyPath = Path.Combine(Directory.GetCurrentDirectory(), "../Infrastructure/RSAKeys/passwordPublic.key");
+
         }
 
         public async Task<string> EncryptPasswordAsync(string Password)
@@ -29,7 +30,7 @@ namespace Infrastructure.Security
                 var PasswordBytes = Encoding.UTF8.GetBytes(Password);
                 //encrypye bytes password
                 var EncryptedBytes = rsa.Encrypt(PasswordBytes, RSAEncryptionPadding.Pkcs1);
-                return Convert.ToBase64String(EncryptedBytes);
+                return  Convert.ToBase64String(EncryptedBytes);
             }
         }
 
