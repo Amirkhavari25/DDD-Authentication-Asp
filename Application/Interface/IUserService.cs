@@ -10,5 +10,6 @@ namespace Application.Interface
     public interface IUserService
     {
         Task<RegisterUserResponse> RegisterUser(RegisterUser DTO);
+        Task<RegisterUserResponse> LoginByEmail(LoginByEmail DTO);
     }
 }

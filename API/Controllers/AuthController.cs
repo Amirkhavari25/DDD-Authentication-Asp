@@ -38,5 +38,21 @@ namespace API.Controllers
                 Token = Result.Token
             });
         }
+
+        public async Task<IActionResult> LoginByEmail([FromBody] LoginByEmail dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new { message = "Please fill all the required properties" });
+            }
+            var res = await _userService.LoginByEmail(dto);
+            return Ok(new
+            {
+                Username = res.Username,
+                Email = res.Email,
+                Mobile = res.Mobile,
+                Token = res.Token
+            });
+        }
     }
 }

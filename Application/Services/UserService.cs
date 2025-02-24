@@ -55,5 +55,29 @@ namespace Application.Services
             }
             return RegisterUserResponse.Success(Token, User);
         }
+        public async Task<RegisterUserResponse> LoginByEmail(LoginByEmail DTO)
+        {
+            var User = await _userRepository.GetUserByEmail(DTO.Email);
+            if (User == null)
+            {
+                return RegisterUserResponse.Failure("User not found, Try to register first");
+            }
+            //check password 
+            var CheckedPass = await _passwordEncryptionService.CheckPasswordAsync(DTO.Password, User.Password);
+            if (!CheckedPass)
+            {
+                return RegisterUserResponse.Failure("Wrong password");
+            }
+            //create token 
+            var Payload = new TokenPayload
+            {
+                CreateDate = DateTime.Now,
+                ExpireDate = DateTime.Now.AddMinutes(30),
+                Username = User.Username
+            };
+            var Token = await _tokenService.CreateToken(Payload);
+            //return res
+            return RegisterUserResponse.Success(Token, User);
+        }
     }
 }
