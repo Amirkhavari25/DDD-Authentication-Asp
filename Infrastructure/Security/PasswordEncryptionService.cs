@@ -22,10 +22,11 @@ namespace Infrastructure.Security
 
         public async Task<string> EncryptPasswordAsync(string Password)
         {
-            var PrivateKey = await File.ReadAllTextAsync(_privateKeyPath);
+            
             using (var rsa = RSA.Create())
             {
-                rsa.ImportFromPem(PrivateKey.ToCharArray());
+                var PublicKey = await File.ReadAllTextAsync(_publicKeyPath);
+                rsa.ImportFromPem(PublicKey.ToCharArray());
                 //make password bytes
                 var PasswordBytes = Encoding.UTF8.GetBytes(Password);
                 //encrypye bytes password
@@ -38,11 +39,11 @@ namespace Infrastructure.Security
         {
             try
             {
-                //read public key
-                var PublicKey = await File.ReadAllTextAsync(_publicKeyPath);
+                //read private key
+                var PrivateKey = await File.ReadAllTextAsync(_privateKeyPath);
                 using (var rsa = RSA.Create())
                 {
-                    rsa.ImportFromPem(PublicKey.ToCharArray());
+                    rsa.ImportFromPem(PrivateKey.ToCharArray());
                     //convert user password from database to bytes
                     var encryptedBytes = Convert.FromBase64String(UserPassword);
                     //decode password saved in database

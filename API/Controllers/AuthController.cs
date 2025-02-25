@@ -38,7 +38,8 @@ namespace API.Controllers
                 Token = Result.Token
             });
         }
-
+        [Route("LoginByEmail")]
+        [HttpPost]
         public async Task<IActionResult> LoginByEmail([FromBody] LoginByEmail dto)
         {
             if (!ModelState.IsValid)
@@ -46,6 +47,10 @@ namespace API.Controllers
                 return BadRequest(new { message = "Please fill all the required properties" });
             }
             var res = await _userService.LoginByEmail(dto);
+            if (!res.IsSuccess)
+            {
+                return BadRequest(new { message = res.ErrorMessage });
+            }
             return Ok(new
             {
                 Username = res.Username,

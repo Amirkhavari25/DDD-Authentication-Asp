@@ -46,7 +46,7 @@ namespace API
 
             //user authentication middleware
             app.UseWhen(context => !context.Request.Path.StartsWithSegments("/api/auth/register") &&
-                                !context.Request.Path.StartsWithSegments("/api/auth/login"),
+                                !context.Request.Path.StartsWithSegments("/api/auth/loginbyemail"),
              builder =>
              {
                  builder.UseMiddleware<AuthenticationMiddleware>();
