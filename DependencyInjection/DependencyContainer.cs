@@ -2,7 +2,6 @@
 using Application.Mapper;
 using Application.Services;
 using Core.Interface;
-using Core.Models;
 using Infrastructure.Data;
 using Infrastructure.Repository;
 using Infrastructure.Security;
@@ -15,9 +14,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infrastructure.Extensions
+namespace DependencyInjection
 {
-    public static class DependecyContainer
+    public static class DependencyContainer
     {
         public static void RegisterServices(IServiceCollection services, IConfiguration configiration)
         {

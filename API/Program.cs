@@ -1,6 +1,6 @@
 
 using API.Middleware;
-using Infrastructure.Extensions;
+using DependencyInjection;
 
 namespace API
 {
@@ -21,7 +21,7 @@ namespace API
             });
 
             // Add services to the container.
-            DependecyContainer.RegisterServices(builder.Services, builder.Configuration);
+            DependencyContainer.RegisterServices(builder.Services, builder.Configuration);
 
 
 
